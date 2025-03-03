@@ -1,8 +1,8 @@
 # just to be sure that no traces left
-docker-compose down -v
+docker compose down -v
 
 # building and running docker-compose file
-docker-compose build && docker-compose up -d
+docker compose build && docker compose up -d
 
 # container id by image name
 apache_container_id=$(docker ps -aqf "name=krayin-php-apache")
@@ -43,3 +43,4 @@ docker cp .configs/.env.testing ${apache_container_id}:/var/www/html/krayin/.env
 
 # executing final commands
 docker exec -i ${apache_container_id} sh -c "cd krayin && php artisan optimize:clear && php artisan migrate:fresh --seed && php artisan storage:link && php artisan vendor:publish --provider='Webkul\\Core\\Providers\\CoreServiceProvider' --force && php artisan optimize:clear"
+docker exec -i ${apache_container_id} sh -c "cd krayin && composer require krayin/rest-api && php artisan krayin-rest-api:install"
